@@ -1,27 +1,28 @@
 package parser
 
-// Function to parse String to identify containers
-// I dont know how deep a descriptor of other people may be thats why this approach is iterative using hash
-func ParseSTR(str string) bool {
-	sts := map[rune]bool{
-		40:  false,
-		91:  false,
-		123: false,
-	}
+var open = map[rune]bool{
+	40:  false,
+	91:  false,
+	123: false,
+}
 
-	cls := map[rune]bool{
-		41:  false,
-		93:  false,
-		125: false,
-	}
+var close = map[rune]bool{
+	41:  false,
+	93:  false,
+	125: false,
+}
+
+// Function to parse String to identify containers
+// I dont know how deep a descriptor of other people may be thats why this approach is iterative using hash map
+func ParseSTR(str string) bool {
 	order := []rune{} // here i make a psoudo queue to last in first out
 	res := false
 	for _, item := range str {
-		_, ok := sts[item] // Loook for the opening
+		_, ok := open[item] // Loook for the opening
 		if ok {
 			order = append(order, item)
 		}
-		_, ok = cls[item] // look for closing token
+		_, ok = close[item] // look for closing token
 		if ok {
 			if len(order) == 0 { // if theres a closing tag and no opening in the list
 				return false
@@ -43,21 +44,13 @@ func ParseSTR(str string) bool {
 	return res
 }
 
+// Function to parse String to identify containers
+// this is the recursive version of the Parse Function
 func Rparser(val string, token []rune, ret bool) bool {
 	if token == nil {
 		token = []rune{}
 	}
-	open := map[rune]bool{
-		'(': false,
-		'{': false,
-		'[': false,
-	}
 
-	close := map[rune]bool{
-		')': false,
-		'}': false,
-		']': false,
-	}
 	if token == nil {
 		token = []rune{}
 	}
